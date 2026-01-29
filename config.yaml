@@ -1,23 +1,23 @@
 # config.yaml اصلاح شده
-listen: :${PORT}
+listen: :443
 
 # ✨ فقط ACME فعال کنید (تولید خودکار SSL)
 acme:
   domains:
-    - ${DOMAIN}  # دامنه Railway شما
-  email: ${EMAIL}  # ایمیل شما
+    - iran-vpn-paas.railway.internal  # دامنه Railway شما
+  email: mohammadhoseindadgostr@gmail.com  # ایمیل شما
   # گواهی‌نامه‌ها به صورت خودکار ساخته می‌شود
 
 # حذف بخش tls: کاملاً
 
 auth:
   type: password
-  password: ${PASSWORD}
+  password: IranVPN@2024
 
 obfs:
   type: salamander
   salamander:
-    password: ${OBFS_PASSWORD}
+    password: Obfs@Secure#456
 
 masquerade:
   type: proxy

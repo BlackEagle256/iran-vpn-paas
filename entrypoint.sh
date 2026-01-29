@@ -1,9 +1,7 @@
 #!/bin/sh
 
-# گرفتن مقدار پورت یا استفاده از ۴۴۳
-LISTEN_PORT="443"
 echo "🚀 Starting Iran VPN..."
-echo "Port: ${LISTEN_PORT}"
+echo "Port: 443"
 
 # تنظیم SNI
 SNI_VALUE="${SNI:-cloudflare.com}"
@@ -23,19 +21,15 @@ openssl req -x509 -nodes -newkey rsa:2048 \
     -subj "/C=US/ST=CA/L=SF/O=VPN/CN=${SNI_VALUE}" \
     2>/dev/null
 
-# خواندن گواهی‌ها
-CERT_CONTENT=$(cat /etc/hysteria/cert.pem | sed ':a;N;$!ba;s/\n/\\n/g')
-KEY_CONTENT=$(cat /etc/hysteria/key.pem | sed ':a;N;$!ba;s/\n/\\n/g')
+echo "✅ Certificate generated at /etc/hysteria/"
 
-# ساخت فایل کانفیگ
+# ساخت فایل کانفیگ ساده
 cat > /config.yaml << EOF
-listen: :${LISTEN_PORT}
+listen: :443
 
 tls:
-  cert: |
-$(cat /etc/hysteria/cert.pem | sed 's/^/    /')
-  key: |
-$(cat /etc/hysteria/key.pem | sed 's/^/    /')
+  cert: /etc/hysteria/cert.pem
+  key: /etc/hysteria/key.pem
   sni: ${SNI_VALUE}
 
 auth:
@@ -62,12 +56,14 @@ log:
 EOF
 
 echo "✅ Config generated successfully!"
-echo "📁 Certificate generated for: ${SNI_VALUE}"
-echo "🔑 Using port: ${LISTEN_PORT}"
+echo "📁 Certificate: /etc/hysteria/cert.pem"
+echo "🔑 Private key: /etc/hysteria/key.pem"
+echo "🔧 Using password: ${PASSWORD_VALUE}"
+echo "🔧 Using obfs password: ${OBFS_PASSWORD_VALUE}"
 
-# نمایش قسمت کوچکی از کانفیگ برای دیباگ
-echo "=== Config Preview ==="
-head -20 /config.yaml
-echo "====================="
+# بررسی فایل‌ها
+echo "=== File Check ==="
+ls -la /etc/hysteria/
+echo "================="
 
 exec /usr/local/bin/hysteria server --config /config.yaml

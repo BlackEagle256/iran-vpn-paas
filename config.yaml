@@ -1,0 +1,26 @@
+# config.yaml اصلاح شده
+listen: :${PORT}
+
+# ✨ فقط ACME فعال کنید (تولید خودکار SSL)
+acme:
+  domains:
+    - ${DOMAIN}  # دامنه Railway شما
+  email: ${EMAIL}  # ایمیل شما
+  # گواهی‌نامه‌ها به صورت خودکار ساخته می‌شود
+
+# حذف بخش tls: کاملاً
+
+auth:
+  type: password
+  password: ${PASSWORD}
+
+obfs:
+  type: salamander
+  salamander:
+    password: ${OBFS_PASSWORD}
+
+masquerade:
+  type: proxy
+  proxy:
+    url: https://www.google.com
+    rewriteHost: true

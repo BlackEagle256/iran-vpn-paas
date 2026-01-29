@@ -1,11 +1,10 @@
 listen: :${PORT}
 
-acme:
-  domains:
-    - ${DOMAIN}
-  email: ${EMAIL}
-  alt_http_port: 8080
-  alt_tls_port: 8443
+# ✨ TLS دستی - بدون ACME
+tls:
+  cert: ${CERT}
+  key: ${KEY}
+  sni: ${SNI}
 
 auth:
   type: password

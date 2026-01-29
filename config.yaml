@@ -1,10 +1,9 @@
 listen: :${PORT}
 
-# ✨ TLS دستی - بدون ACME
-tls:
-  cert: ${CERT}
-  key: ${KEY}
-  sni: ${SNI}
+# بدون TLS - فقط برای تست
+# tls:
+#   cert: ...
+#   key: ...
 
 auth:
   type: password
@@ -15,15 +14,10 @@ obfs:
   salamander:
     password: ${OBFS_PASSWORD}
 
-bandwidth:
-  up: 100 mbps
-  down: 100 mbps
+# اجازه insecure
+insecure: true
 
 masquerade:
   type: proxy
   proxy:
     url: https://www.google.com
-    rewriteHost: true
-
-log:
-  level: error

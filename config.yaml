@@ -1,26 +1,57 @@
-# config.yaml اصلاح شده
-listen: :443
+listen: :${PORT}
 
-# ✨ فقط ACME فعال کنید (تولید خودکار SSL)
+# تنظیمات ACME برای SSL خودکار
 acme:
   domains:
-    - iran-vpn-paas.railway.internal  # دامنه Railway شما
-  email: mohammadhoseindadgostr@gmail.com  # ایمیل شما
-  # گواهی‌نامه‌ها به صورت خودکار ساخته می‌شود
+    - ${DOMAIN}
+  email: ${EMAIL}
+  # برای Railway این تنظیمات ضروری است
+  alt_http_port: 8080
+  alt_tls_port: 8443
+  disable_http_challenge: false
+  disable_tls_alpn_challenge: false
+  # ری‌نیو اتوماتیک
+  renew: 720h
 
-# حذف بخش tls: کاملاً
-
+# احراز هویت
 auth:
   type: password
-  password: IranVPN@2024
+  password: ${PASSWORD}
 
+# مخفی‌سازی ترافیک (ضروری برای ایران)
 obfs:
   type: salamander
   salamander:
-    password: Obfs@Secure#456
+    password: ${OBFS_PASSWORD}
 
+# تنظیمات پهنای باند
+bandwidth:
+  up: 100 mbps
+  down: 100 mbps
+
+# تنظیمات QUIC برای عملکرد بهتر
+quic:
+  initStreamReceiveWindow: 8388608
+  maxStreamReceiveWindow: 8388608
+  initConnReceiveWindow: 20971520
+  maxConnReceiveWindow: 20971520
+  maxIdleTimeout: 30s
+  maxIncomingStreams: 1024
+  disablePathMTUDiscovery: false
+
+# استتار ترافیک به عنوان پروکسی
 masquerade:
   type: proxy
   proxy:
     url: https://www.google.com
     rewriteHost: true
+
+# کاهش لاگ‌گیری
+log:
+  level: error
+  timestamp: true
+
+# جلوگیری از حملات
+ignoreClientBandwidth: false
+disableUDP: false
+udpIdleTimeout: 60s

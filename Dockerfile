@@ -1,10 +1,11 @@
 FROM alpine:latest AS builder
-RUN apk add --no-cache wget
+
+RUN apk add --no-cache wget openssl
 RUN wget -O /usr/local/bin/hysteria https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64
 RUN chmod +x /usr/local/bin/hysteria
 
 FROM alpine:latest
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates openssl
 COPY --from=builder /usr/local/bin/hysteria /usr/local/bin/hysteria
 RUN mkdir -p /etc/hysteria
 

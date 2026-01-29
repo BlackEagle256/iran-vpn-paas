@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # گرفتن مقدار پورت یا استفاده از ۴۴۳
-LISTEN_PORT="${PORT:-443}"
+LISTEN_PORT="443"
 echo "🚀 Starting Iran VPN..."
 echo "Port: ${LISTEN_PORT}"
 

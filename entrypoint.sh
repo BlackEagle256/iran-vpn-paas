@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "🚀 Starting Iran VPN..."
-echo "Port: ${PORT:-443}"
+echo "Port: ${PORT:443}"
 
 # تنظیم SNI
 SNI_VALUE="${SNI:-cloudflare.com}"
@@ -23,7 +23,7 @@ KEY_CONTENT=$(cat /etc/hysteria/key.pem)
 
 # جایگزینی در کانفیگ
 cat > /config.yaml << EOF
-listen: :\${PORT:-443}
+listen: :\${PORT:443}
 
 tls:
   cert: |

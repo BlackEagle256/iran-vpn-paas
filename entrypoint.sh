@@ -1,11 +1,17 @@
 #!/bin/sh
 
+# گرفتن مقدار پورت یا استفاده از ۴۴۳
+LISTEN_PORT="${PORT:-443}"
 echo "🚀 Starting Iran VPN..."
-echo "Port: ${PORT:443}"
+echo "Port: ${LISTEN_PORT}"
 
 # تنظیم SNI
 SNI_VALUE="${SNI:-cloudflare.com}"
 echo "SNI: ${SNI_VALUE}"
+
+# گرفتن پسوردها
+PASSWORD_VALUE="${PASSWORD:-IranVPN@2024}"
+OBFS_PASSWORD_VALUE="${OBFS_PASSWORD:-Obfs@Secure#456}"
 
 # همیشه گواهی خودامضا بساز
 echo "🔐 Generating self-signed certificate..."
@@ -18,28 +24,28 @@ openssl req -x509 -nodes -newkey rsa:2048 \
     2>/dev/null
 
 # خواندن گواهی‌ها
-CERT_CONTENT=$(cat /etc/hysteria/cert.pem)
-KEY_CONTENT=$(cat /etc/hysteria/key.pem)
+CERT_CONTENT=$(cat /etc/hysteria/cert.pem | sed ':a;N;$!ba;s/\n/\\n/g')
+KEY_CONTENT=$(cat /etc/hysteria/key.pem | sed ':a;N;$!ba;s/\n/\\n/g')
 
-# جایگزینی در کانفیگ
+# ساخت فایل کانفیگ
 cat > /config.yaml << EOF
-listen: :\${PORT:443}
+listen: :${LISTEN_PORT}
 
 tls:
   cert: |
-$(echo "${CERT_CONTENT}" | sed 's/^/    /')
+$(cat /etc/hysteria/cert.pem | sed 's/^/    /')
   key: |
-$(echo "${KEY_CONTENT}" | sed 's/^/    /')
+$(cat /etc/hysteria/key.pem | sed 's/^/    /')
   sni: ${SNI_VALUE}
 
 auth:
   type: password
-  password: \${PASSWORD:-IranVPN@2024}
+  password: ${PASSWORD_VALUE}
 
 obfs:
   type: salamander
   salamander:
-    password: \${OBFS_PASSWORD:-Obfs@Secure#456}
+    password: ${OBFS_PASSWORD_VALUE}
 
 bandwidth:
   up: 100 mbps
@@ -57,5 +63,11 @@ EOF
 
 echo "✅ Config generated successfully!"
 echo "📁 Certificate generated for: ${SNI_VALUE}"
+echo "🔑 Using port: ${LISTEN_PORT}"
+
+# نمایش قسمت کوچکی از کانفیگ برای دیباگ
+echo "=== Config Preview ==="
+head -20 /config.yaml
+echo "====================="
 
 exec /usr/local/bin/hysteria server --config /config.yaml
